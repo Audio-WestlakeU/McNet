@@ -1,1 +1,1 @@
-# SNSFNet
+# McNet
