@@ -21,6 +21,9 @@ Table 2. Performance of online speech enhancement.
 | McNet (prop.)        | **3.29** | **2.67** | **97.2** | **19.0** | 
 
 # Train & Test
+**Reminder**: This project is built on the `pytorch-lightning` package, in particular its [command line interface (CLI)](https://pytorch-lightning.readthedocs.io/en/latest/cli/lightning_cli_intermediate.html). To understand the commands below and config file, you need to have some basic knowledge about the CLI in lightning.
+
+
 **Train:**
 ```
 python McNetCLI.py fit --config config\mc_net_online.yaml
