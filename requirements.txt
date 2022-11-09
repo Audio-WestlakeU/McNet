@@ -1,0 +1,12 @@
+jsonargparse[signatures,urls]>=4.5.0
+torchmetrics[audio]
+omegaconf
+pytorch-lightning>=1.7.1
+torch
+rich
+soundfile
+librosa
+scipy
+toml
+pesq
+pandas
