@@ -4,7 +4,8 @@ The official repo: **McNet: Fuse Multiple Cues for Multichannel Speech Enhanceme
 Table 1. Performance of offline speech enhancement.* means scores are quoted from the original papers.
 | Method                  | NB-PESQ  | WB-PESQ  | STOI     | SDR      |
 | ----------------------- | -------- | -------- | -------- | -------- |
-| MNMF Beamforming * [20] | -        | -        | 87.0     | 7.5      |
+| Noisy                   | 1.82     | 1.27     | 87.0     | 7.5      |
+| MNMF Beamforming * [20] | -        | -        | 94.0     | 16.2     |
 | Oracle MVDR             | 2.49     | 1.94     | 97.0     | 17.3     |
 | CA Dense U-net * [12]   | -        | 2.44     | -        | 18.6     |
 | Narrow-band Net [11]    | 2.74     | 2.13     | 95.0     | 16.6     |
