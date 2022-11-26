@@ -1,0 +1,156 @@
+# pytorch_lightning==1.7.1
+seed_everything: 1066078912
+trainer:
+  gradient_clip_val: 5
+  gradient_clip_algorithm: norm
+  check_val_every_n_epoch: 5
+  accumulate_grad_batches: 1
+  max_epochs: 500
+  strategy: ddp_find_unused_parameters_false
+  precision: 32
+  gpus:0,  # the 0-th GPU, or set to 0,1,2 to use three GPUs
+model:
+  io:
+    class_path: src.model.mc_net.cIRMIO
+    init_args:
+      selected_channels:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      ref_channel: 4
+      loss_func: src.model.mc_net.stft_y_mse
+      ft_len: 512
+      ft_hop: 256
+      sliding_window_len: 192
+      use_cumulative_normalization: false
+  freq:
+    class_path: src.model.mc_net.RNN_FC
+    init_args:
+      input_size: 12
+      output_size: 64
+      hidden_size: 128
+      num_layers: 1
+      bidirectional: true
+      act_funcs:
+      - ''
+      - ReLU
+      use_FC: true
+  narr:
+    class_path: src.model.mc_net.RNN_FC
+    init_args:
+      input_size: 76
+      output_size: 64
+      hidden_size: 256
+      num_layers: 1
+      bidirectional: true
+      act_funcs:
+      - ''
+      - ReLU
+      use_FC: true
+  sub:
+    class_path: src.model.mc_net.RNN_FC
+    init_args:
+      input_size: 327
+      output_size: 64
+      hidden_size: 384
+      num_layers: 1
+      bidirectional: true
+      act_funcs:
+      - ''
+      - ReLU
+      use_FC: true
+  full:
+    class_path: src.model.mc_net.RNN_FC
+    init_args:
+      input_size: 75
+      output_size: 2
+      hidden_size: 128
+      num_layers: 1
+      bidirectional: true
+      act_funcs:
+      - ''
+      - ''
+      use_FC: true
+  order:
+  - freq
+  - narr+X
+  - sub3+XrMag
+  - full4freq+XrMag
+  sub_freqs:
+  - 3
+  - 2
+  look_past_and_ahead:
+  - 5
+  - 5
+  learning_rate: 0.001
+  optimizer_kwargs: {}
+  lr_scheduler: ExponentialLR
+  lr_scheduler_kwargs:
+    gamma: 0.992
+  exp_name: exp
+  use_dense_net: false
+  use_time_domain_loss: false
+data:
+  train_dataset:
+    class_path: src.dataset.train_dataset.TrainDataset
+    init_args:
+      clean_dataset_dir: ~/simu-data/training_dataset/clean_speech/
+      noise_dataset_dir: ~/simu-data/training_dataset/noise_segment_all/
+      snr_range:
+      - -5
+      - 10
+      reverb_proportion: 0.75
+      silence_length: 0.2
+      target_dB_FS: -5
+      target_dB_FS_floating_value: 10
+      sub_sample_length: 3.072
+      sr: 16000
+      nchannels: 6
+      ref_channel: 4
+      selected_channels:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  val_dataset:
+    class_path: src.dataset.val_dataset.ValDataset
+    init_args:
+      clean_dataset_dir: ~/simu-data/validation_dataset/clean/
+      noisy_dataset_dir: ~/simu-data/validation_dataset/noisy/
+      sr: 16000
+      ref_channel: 4
+      selected_channels:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  inf_dataset:
+    class_path: src.dataset.inf_dataset.InfDataset
+    init_args:
+      noisy_dataset_dir: ~/simu-data/test_dataset/noisy
+      clean_dataset_dir: ~/simu-data/test_dataset/clean
+      sr: 16000
+      ref_channel: 4
+      selected_channels:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  test_set: test
+  batch_size:
+  - 3 # change to 1 if 3 GPUs are used
+  - 1
+  num_workers: 5
+  pin_memory: true
+  prefetch_factor: 5
+  persistent_workers: false
+ckpt_path: null
