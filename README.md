@@ -36,7 +36,7 @@ python McNetCLI.py fit --config config\mc_net_online.yaml
 python McNetCLI.py test --config config\mc_net_online.yaml
 ```
 
-If you want to use our pretrained model to inference,
+If you want to use our pretrained model,
 ```
 python McNetCLI.py test --config config/mc_net_offline.yaml  --trainer.gpus 0,1  --ckpt_path model_checkpoints/offline/epoch494_criteria18.78_sdr18.78.ckpt
 ```
