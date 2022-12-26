@@ -1,7 +1,6 @@
 # McNet
 The official repo: **McNet: Fuse Multiple Cues for Multichannel Speech Enhancement** submitted to ICASSP 2023 (https://arxiv.org/pdf/2211.08872.pdf). Examples can be found at https://audio.westlake.edu.cn/Research/McNet.htm.
 
-We also upload our pretrained model at https://drive.google.com/drive/folders/15nPrFrf0txebVaSanaPbgwxqUZG20mue?usp=share_link.
 
 Table 1. Performance of offline speech enhancement.* means scores are quoted from the original papers.
 | Method                  | NB-PESQ  | WB-PESQ  | STOI     | SDR      |
