@@ -8,7 +8,7 @@ trainer:
   max_epochs: 500
   strategy: ddp_find_unused_parameters_false
   precision: 32
-  gpus:0,  # the 0-th GPU, or set to 0,1,2 to use three GPUs
+  gpus: 0,  # the 0-th GPU, or set to 0,1,2 to use three GPUs
 model:
   io:
     class_path: src.model.mc_net.cIRMIO

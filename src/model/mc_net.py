@@ -552,16 +552,8 @@ class McNet(pl.LightningModule):
 
     def test_step(self, batch, batch_idx):
         x, yr, paras = batch  # x [B, C, T]; yr [B, T]
-        t1 = time.time()
         prediction, data = self.forward(x)
         yr_hat = self.io.prepare_time_domain(x=x, prediction=prediction, **data)
-        t2 = time.time()
-        t_cost = t2 - t1
-        print('processing_time:' + str(t_cost))
-        t_x = x.shape[-1] / 16000
-        print('length_wav:' + str(t_x))
-        rtf_ratio = t_cost / t_x
-        print('RTF:' + str(rtf_ratio))
         target = self.io.prepare_target(x=x, yr=yr, **data)
         assert yr_hat.shape[1] == yr.shape[1]
 
