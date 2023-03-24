@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader, Dataset
 
 from .train_dataset import TrainDataset
 from .val_dataset import ValDataset
+from .predict_dataset import PredictDataset
 from .inf_dataset import InfDataset
 
 from jsonargparse import lazy_instance  # 把默认参数注入command line interface（CLI）
@@ -16,6 +17,7 @@ class MyDataModule(LightningDataModule):
         train_dataset: Union[Dataset, Tuple[Callable, Dict[str,Any]]] = lazy_instance(TrainDataset),
         val_dataset: Dataset = lazy_instance(ValDataset),
         inf_dataset: Dataset = lazy_instance(InfDataset),
+        predict_dataset: Dataset = lazy_instance(PredictDataset),
         test_set: str = "test",
         batch_size: List[int] = [5, 1],
         num_workers: int = 15,
@@ -33,12 +35,14 @@ class MyDataModule(LightningDataModule):
             self.train_dataset = train_dataset[0](**train_dataset[1])
         self.val_dataset = val_dataset
         self.inf_dataset = inf_dataset
+        self.predict_dataset = predict_dataset
 
         self.test_set = test_set
 
         self.batch_size_train = batch_size[0]
         self.batch_size_val = batch_size[1]
         self.batch_size_test = 1 if len(batch_size) == 2 else batch_size[2]
+        self.batch_size_predict = 1 if len(batch_size) == 2 else batch_size[2]
 
         self.num_workers = num_workers
         self.pin_memory = pin_memory
@@ -96,4 +100,15 @@ class MyDataModule(LightningDataModule):
             num_workers=0,
             prefetch_factor=prefetch_factor,
             shuffle=False,  # test_dataloader没必要shuffle
+        )
+    
+    def predict_dataloader(self) -> DataLoader:
+        prefetch_factor = 2
+        dataset = self.predict_dataset
+        return DataLoader(
+            dataset,
+            batch_size=self.batch_size_predict,
+            num_workers=0,
+            prefetch_factor=prefetch_factor,
+            shuffle=False,
         )
