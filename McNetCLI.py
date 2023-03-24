@@ -168,6 +168,35 @@ class MyCLI(LightningCLI):
         for f in files:
             os.remove(self.trainer.log_dir + '/' + f)
             print('tensorboard log file for test is removed: ' + self.trainer.log_dir + '/' + f)
+            
+    def before_predict(self):
+        """功能：在预测时，调整预测目录为：训练目录/epoch_xxx_predict/version_x
+
+        Raises:
+            Exception: _description_
+        """
+        torch.set_num_interop_threads(5)
+        torch.set_num_threads(5)
+        if self.config['predict']['ckpt_path'] != None:
+            ckpt_path = self.config['predict']['ckpt_path']
+        else:
+            raise Exception('You should give --ckpt_path if you want to predict')
+        epoch = os.path.basename(ckpt_path).split('_')[0]
+        write_dir = os.path.dirname(os.path.dirname(ckpt_path))
+        exp_save_path = os.path.normpath(write_dir + '/' + epoch + '_' + 'predict')
+
+        self.trainer.logger = TensorBoardLogger(exp_save_path, name='', default_hp_metric=False)
+
+    def after_predict(self):
+        """测试完成之后移除预测目录下tensorboard的相关文件
+        """
+        if not self.trainer.is_global_zero:
+            return
+        import fnmatch
+        files = fnmatch.filter(os.listdir(self.trainer.log_dir), 'events.out.tfevents.*')
+        for f in files:
+            os.remove(self.trainer.log_dir + '/' + f)
+            print('tensorboard log file for predict is removed: ' + self.trainer.log_dir + '/' + f)
 
 
 if __name__ == '__main__':
