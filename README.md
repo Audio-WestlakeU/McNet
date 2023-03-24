@@ -1,5 +1,5 @@
 # McNet
-The official repo: **McNet: Fuse Multiple Cues for Multichannel Speech Enhancement** submitted to ICASSP 2023 (https://arxiv.org/pdf/2211.08872.pdf). Examples can be found at https://audio.westlake.edu.cn/Research/McNet.htm.
+The official repo: **McNet: Fuse Multiple Cues for Multichannel Speech Enhancement** accepted by ICASSP 2023 (https://arxiv.org/pdf/2211.08872.pdf). Examples can be found at https://audio.westlake.edu.cn/Research/McNet.htm.
 
 
 Table 1. Performance of offline speech enhancement.* means scores are quoted from the original papers.
@@ -39,4 +39,10 @@ python McNetCLI.py test --config config\mc_net_online.yaml
 If you want to use our pretrained model,
 ```
 python McNetCLI.py test --config config/mc_net_offline.yaml  --trainer.gpus 0,1  --ckpt_path model_checkpoints/offline/epoch494_criteria18.78_sdr18.78.ckpt
+```
+
+# Update
+3.24 Add predict module
+```
+python McNetCLI.py predict --config config/mc_net_offline.yaml  --trainer.gpus 0,1  --ckpt_path model_checkpoints/offline/epoch494_criteria18.78_sdr18.78.ckpt
 ```
