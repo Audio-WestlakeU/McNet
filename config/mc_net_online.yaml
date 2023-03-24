@@ -145,6 +145,19 @@ data:
       - 3
       - 4
       - 5
+  predict_dataset:
+    class_path: src.dataset.predict_dataset.PredictDataset
+    init_args:
+      noisy_dataset_dir: ~/simu-data/test_dataset/noisy/
+      sr: 16000
+      ref_channel: 4
+      selected_channels:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
   test_set: test
   batch_size:
   - 3 # change to 1 if 3 GPUs are used
