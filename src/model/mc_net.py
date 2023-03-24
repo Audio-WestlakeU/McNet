@@ -608,9 +608,27 @@ class McNet(pl.LightningModule):
         Returns:
             Tensor: y_hat, shape [B, T]; prediction_cIRM_mask,shape;data
         """
-        x = batch
+        x, paras = batch
+        # 创建保存目录
+        self.exp_save_path = os.path.join(self.trainer.logger.log_dir, paras['noisy_dataset_file_name'][0])
+        os.makedirs(self.exp_save_path, exist_ok=True)  
+        # 默认exist_ok: False, 在目标目录已存在的情况下触发FileExistsError异常，但如果exist_ok是True,则在目标目录已经存在的情况下不会触发FileExistsError异常。
+        
         prediction, data = self.forward(x)
         yr_hat = self.io.prepare_time_domain(x=x, prediction=prediction, **data)
+
+        wav_name = paras['wav_name'][0] if 'wav_name' in paras else str(paras['index'].cpu().item()) + '.wav'
+        sr = paras['sr'][0]
+        def write_wav(wav_path: str, wav: torch.Tensor, norm_to: torch.Tensor = None):
+            # make sure wav don't have illegal values (abs greater than 1)
+            abs_max = torch.max(torch.abs(wav))
+            if norm_to:
+                wav = wav / abs_max * norm_to
+            if abs_max > 1:
+                wav /= abs_max
+            sf.write(wav_path, wav.detach().cpu().numpy(), samplerate=sr.item())
+
+        write_wav(wav_path=self.exp_save_path + "/" + f"{wav_name}", wav=yr_hat[0])
         return yr_hat
 
     def configure_optimizers(self):
